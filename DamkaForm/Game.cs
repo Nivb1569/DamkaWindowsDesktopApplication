@@ -111,7 +111,7 @@ namespace DamkaForm
                     m_Board.UpdateKingCase(m_CurrentPlayer.PlayerPiece);
                     if (!anotherJump)
                     {
-                        changeTurn();
+                        ChangeTurn();
                         samePlayer = false;
                     }
                     checkGameStatus();
@@ -162,7 +162,7 @@ namespace DamkaForm
 
             return counterPoints;
         }
-        private void changeTurn()
+        public void ChangeTurn()
         {
             if (m_CurrentPlayer.PlayerName == m_FirstPlayer.PlayerName)
             {
@@ -267,7 +267,7 @@ namespace DamkaForm
                 m_Winner = m_FirstPlayer;
             }
         }
-        private void checkGameStatus()
+        public void CheckGameStatus()
         {
             if (m_FirstPlayer.NumberOfPieces == 0 || m_SecondPlayer.NumberOfPieces == 0)
             {
@@ -287,12 +287,6 @@ namespace DamkaForm
             else if (m_FirstPlayer.NoMovesLeft(m_Board) && m_SecondPlayer.NoMovesLeft(m_Board))
             {
                 GameOver = true;
-            }
-
-            if (GameOver)
-            {
-                //Ex02.ConsoleUtils.Screen.Clear();
-                m_Board.PrintBoard();
             }
         }
         private void printPreviousMove(Player i_currentPlayer, Point i_From, Point i_To, bool samePlayer)

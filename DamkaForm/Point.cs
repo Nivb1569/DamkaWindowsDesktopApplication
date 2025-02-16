@@ -32,6 +32,9 @@ namespace DamkaForm
             return string.Format("{0}{1}>{2}{3}",xP1,yP1,xP2,yP2);
             
         }
-
+        public bool IsEqualPoints(Point i_Point)
+        {
+            return m_X == i_Point.X && m_Y == i_Point.Y;
+        }
     }
 }

@@ -89,14 +89,14 @@ namespace DamkaForm
 
                 if (m_CurrentGame.CurrentPlayer.IsLegalMove(fromPoint, toPoint, m_CurrentGame.Board))
                 {
-                    if (m_CurrentGame.CurrentPlayer.OptionalAnotherJumps != null)
+                    if (!isOptimalAnotherJumpsEmpty())
                     {
                         isJumpMove = true;
                         if (!m_CurrentGame.CurrentPlayer.IsChoiceInList(fromPoint, toPoint, m_CurrentGame.CurrentPlayer.OptionalAnotherJumps))
                         {
                             // TODO: This to lines get out to funtion, very similar to the next if.
                             MessageBox.Show("You have to keep jumping!");
-                            invalidChoice = false;
+                            invalidChoice = true;
                         }
                     }
                     else if (m_CurrentGame.CurrentPlayer.MustJump(out o_OptionalJumpsRes, m_CurrentGame.Board))
@@ -106,7 +106,7 @@ namespace DamkaForm
                         {
                             // TODO: This to lines get out to funtion, very similar to the next if.
                             MessageBox.Show("You must jump!");
-                            invalidChoice = false;
+                            invalidChoice = true;
                         }
                     }
                     else
@@ -116,17 +116,38 @@ namespace DamkaForm
 
                     if (invalidChoice)
                     {
+                        m_From.BackColor = Color.White;
+                        m_From = null;
+                        m_To = null;
                         return;
                     }
 
                     m_CurrentGame.CurrentPlayer.ExecuteMove(fromPoint, toPoint, m_CurrentGame.Board);
                     // make Move
-                    updateBoard();
+                    //updateBoard
                     // update the player list.
+                    m_CurrentGame.Board.UpdateKingCase(m_CurrentGame.CurrentPlayer.PlayerPiece);
+                    updateBoard();
+                    if (isJumpMove)
+                    {
+                        List<Point[]> tempOptionalAnotherJumps;
+                        m_CurrentGame.CurrentPlayer.CheckIfCanJumpAndMakeList(m_CurrentGame.Board, toPoint, out tempOptionalAnotherJumps);
+                        m_CurrentGame.CurrentPlayer.OptionalAnotherJumps = tempOptionalAnotherJumps;
+                    }
+                    if (isOptimalAnotherJumpsEmpty()) // problema
+                    {
+                        m_CurrentGame.ChangeTurn();
+                        updateLabelBackColor();
+                    }
                     // Keep the turn if I can eat or change
+
                     // Update king case
+
                     // Check if someone won.
+                    m_CurrentGame.CheckGameStatus();
+
                     // Update score (labels)
+                    
                     // Switch color
                 }
                 else
@@ -159,6 +180,24 @@ namespace DamkaForm
         private bool isCurrentPlayerPiece(System.Drawing.Point i_ClickedPoint)
         {
             return m_CurrentGame.CurrentPlayer.TheMoveIsFromThePlayerSquare(m_CurrentGame.Board.GameBoard[i_ClickedPoint.X, i_ClickedPoint.Y].PieceType);
+        }
+
+        private bool isOptimalAnotherJumpsEmpty()
+        {
+            return m_CurrentGame.CurrentPlayer.OptionalAnotherJumps == null || m_CurrentGame.CurrentPlayer.OptionalAnotherJumps.Count == 0;
+        }
+        private void updateLabelBackColor()
+        {
+            if (m_CurrentGame.CurrentPlayer == m_CurrentGame.FirstPlayer)
+            {
+                labelPlayer1.BackColor = Color.LightBlue;
+                labelPlayer2.BackColor = Color.Empty;
+            }
+            else
+            {
+                labelPlayer2.BackColor = Color.LightBlue;
+                labelPlayer1.BackColor = Color.Empty;
+            }
         }
     }
 }

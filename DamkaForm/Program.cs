@@ -8,7 +8,12 @@ namespace DamkaForm
         public static void Main()
         {
             FormGameSettings formGameSettings = new FormGameSettings();
-            formGameSettings.ShowDialog();
+
+            if (formGameSettings.ShowDialog() != DialogResult.OK)
+            {
+                return;
+            }
+
             Game game = new Game(formGameSettings.BoardSize, formGameSettings.FirstPlayer, formGameSettings.SecondPlayer);
             DamkaGame damkaGame = new DamkaGame(game);
             damkaGame.ShowDialog();

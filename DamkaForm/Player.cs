@@ -212,7 +212,7 @@ namespace DamkaForm
 
             for (int i = 0; i < i_ListOfPoints.Count; i++)
             {
-                if (i_From == i_ListOfPoints[i][0] && i_To == i_ListOfPoints[i][1])
+                if (i_From.IsEqualPoints(i_ListOfPoints[i][0]) && i_To.IsEqualPoints(i_ListOfPoints[i][1]))
                 {
                     isValid = true;
                     break;
@@ -232,7 +232,7 @@ namespace DamkaForm
                     if (isPlayerPiece(i_Board.GameBoard[i, j].PieceType))
                     {
                         Point jumpFrom = new Point(i, j);
-                        checkIfCanJumpAndMakeList(i_Board, jumpFrom, out List<Point[]> currentOptionalList);
+                        CheckIfCanJumpAndMakeList(i_Board, jumpFrom, out List<Point[]> currentOptionalList);
                         if (currentOptionalList.Count > 0)
                         {
                             o_OptionalJumpsRes.AddRange(currentOptionalList);
@@ -742,7 +742,7 @@ namespace DamkaForm
             return result;
         }
         // $G$ DSN-004 (-5) Code Duplication!
-        public bool checkIfCanJumpAndMakeList(Board i_Board, Point i_jumpFrom, out List<Point[]> io_nextJumpMove)
+        public bool CheckIfCanJumpAndMakeList(Board i_Board, Point i_jumpFrom, out List<Point[]> io_nextJumpMove)
         {
             bool result = false;
             io_nextJumpMove = new List<Point[]>();

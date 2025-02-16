@@ -64,7 +64,7 @@ namespace DamkaForm
             {
                 m_BoardSize = 10;
             }
-
+            this.DialogResult = DialogResult.OK;
             this.Close();
         }
     }

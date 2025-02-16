@@ -24,6 +24,7 @@ namespace DamkaForm
         public Board Board
         {
             get { return m_Board; }
+            set { m_Board = value; }
         }
         public Player FirstPlayer
         {
@@ -36,10 +37,16 @@ namespace DamkaForm
         public Player CurrentPlayer
         {
             get { return m_CurrentPlayer; }
+            set { m_CurrentPlayer = value; }
+        }
+        public Player Winner
+        {
+            get { return m_Winner; }
+            set { m_Winner = value; }
         }
         public void Run()
         {
-            setTheNumberOfPicesToThePlayers();
+            SetTheNumberOfPicesToThePlayers();
             startToPlay();
         }
         private static int gameWithPlayerOrComputer()
@@ -114,16 +121,16 @@ namespace DamkaForm
                         ChangeTurn();
                         samePlayer = false;
                     }
-                    checkGameStatus();
+                    CheckGameStatus();
                 }
-                updatePlayerPoints();
+                UpdatePlayerPoints();
                 printSummaryOfTheGame();
                 wantToPlay = doYouWantToPlayAnotherRound();
             }
             //Ex02.ConsoleUtils.Screen.Clear();
             gameIsOverMessage();
         }
-        private void updatePlayerPoints()
+        public void UpdatePlayerPoints()
         {
             if (m_Winner != null)
             {
@@ -233,7 +240,7 @@ namespace DamkaForm
                 m_FirstPlayer.NumberOfPieces = m_FirstPlayer.NumberOfPieces - 1;
             }
         }
-        private void setTheNumberOfPicesToThePlayers()
+        public void SetTheNumberOfPicesToThePlayers()
         {
             if (m_Board.Size == 6)
             {
@@ -331,7 +338,7 @@ namespace DamkaForm
         private void init()
         {
             m_Board = new Board(m_Board.Size);
-            setTheNumberOfPicesToThePlayers();
+            SetTheNumberOfPicesToThePlayers();
             m_CurrentPlayer = m_FirstPlayer;
             m_Winner = null;
             m_GameOver = false;

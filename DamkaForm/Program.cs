@@ -16,6 +16,7 @@ namespace DamkaForm
 
             Game game = new Game(formGameSettings.BoardSize, formGameSettings.FirstPlayer, formGameSettings.SecondPlayer);
             DamkaGame damkaGame = new DamkaGame(game);
+            game.SetTheNumberOfPicesToThePlayers();
             damkaGame.ShowDialog();
         }
     }

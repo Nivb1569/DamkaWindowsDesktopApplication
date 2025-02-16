@@ -16,9 +16,9 @@ namespace DamkaForm
         {
             m_CurrentGame = i_CurrentGame;
             InitializeComponent();
-            this.labelPlayer1.Text = m_CurrentGame.FirstPlayer.PlayerName;
+            this.labelPlayer1.Text = m_CurrentGame.FirstPlayer.PlayerName + ":";
             this.labelPlayer1.BackColor = Color.LightBlue;
-            this.labelPlayer2.Text = m_CurrentGame.SecondPlayer.PlayerName;
+            this.labelPlayer2.Text = m_CurrentGame.SecondPlayer.PlayerName + ":";
             InitializeBoard();
         }
 
@@ -134,7 +134,7 @@ namespace DamkaForm
                         m_CurrentGame.CurrentPlayer.CheckIfCanJumpAndMakeList(m_CurrentGame.Board, toPoint, out tempOptionalAnotherJumps);
                         m_CurrentGame.CurrentPlayer.OptionalAnotherJumps = tempOptionalAnotherJumps;
                     }
-                    if (isOptimalAnotherJumpsEmpty()) // problema
+                    if (isOptimalAnotherJumpsEmpty())
                     {
                         m_CurrentGame.ChangeTurn();
                         updateLabelBackColor();
@@ -145,9 +145,10 @@ namespace DamkaForm
 
                     // Check if someone won.
                     m_CurrentGame.CheckGameStatus();
+                    showMessageBoxIfTheGameIsOver();
 
                     // Update score (labels)
-                    
+
                     // Switch color
                 }
                 else
@@ -166,7 +167,7 @@ namespace DamkaForm
             {
                 for (int j = 0; j < boardSize; j++)
                 {
-                    if(m_CurrentGame.Board.GameBoard[i, j].PieceType == Piece.e_PieceType.Empty)
+                    if (m_CurrentGame.Board.GameBoard[i, j].PieceType == Piece.e_PieceType.Empty)
                     {
                         boardButtons[i, j].Text = "";
                     }
@@ -198,6 +199,66 @@ namespace DamkaForm
                 labelPlayer2.BackColor = Color.LightBlue;
                 labelPlayer1.BackColor = Color.Empty;
             }
+        }
+        private void showMessageBoxIfTheGameIsOver()
+        {
+            String messageToDisplay;
+
+            if (m_CurrentGame.GameOver)
+            {
+                if (m_CurrentGame.Winner != null)
+                {
+                    messageToDisplay = $"{m_CurrentGame.Winner.PlayerName} Won!\nAnother Round?"; // TODO : /n
+                }
+                else
+                {
+                    messageToDisplay = "Tie!\nAnother Round?"; // TODO : /n
+                }
+
+                DialogResult result = MessageBox.Show(messageToDisplay, "Damka",
+                MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+                if (result == DialogResult.Yes)
+                {
+                    prepareAnotherGame();
+                }
+                else
+                {
+                    this.Close();
+                    this.Dispose();
+                }
+            }
+        }
+        private void prepareAnotherGame()
+        {
+            updateScore();
+            m_CurrentGame.SetTheNumberOfPicesToThePlayers();
+            m_CurrentGame.Board = new Board(m_CurrentGame.Board.Size);
+            for (int i = 0; i < m_CurrentGame.Board.Size; i++)
+            {
+                for (int j = 0; j < m_CurrentGame.Board.Size; j++)
+                {
+                    if (m_CurrentGame.Board.GameBoard[i, j].PieceType != Piece.e_PieceType.Empty)
+                    {
+                        boardButtons[i,j].Text = m_CurrentGame.Board.GameBoard[i, j].PieceType.ToString();
+                    }
+                    else
+                    {
+                        boardButtons[i, j].Text = "";
+                    }
+                }
+            }
+            m_CurrentGame.CurrentPlayer = m_CurrentGame.FirstPlayer;
+            labelPlayer1.BackColor = Color.LightBlue;
+            labelPlayer2.BackColor = Color.Empty;
+            m_CurrentGame.Winner = null;
+            m_CurrentGame.GameOver = false;
+        }
+        private void updateScore()
+        {
+            m_CurrentGame.UpdatePlayerPoints();
+            Player1Score.Text = m_CurrentGame.FirstPlayer.Points.ToString();
+            Player2Score.Text = m_CurrentGame.SecondPlayer.Points.ToString();
         }
     }
 }

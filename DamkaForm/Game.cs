@@ -111,7 +111,7 @@ namespace DamkaForm
                     //if (isJumpMove)
                     //{
                     //    updateNumberOfPices();
-                    //    anotherJump = m_CurrentPlayer.checkIfCanJumpAndMakeList(m_Board, o_ToPrev, out o_NextJumpMove);
+                        //anotherJump = m_CurrentPlayer.checkIfCanJumpAndMakeList(m_Board, o_ToPrev, out o_NextJumpMove);
                     //    if (anotherJump)
                     //        samePlayer = true;
                     //}

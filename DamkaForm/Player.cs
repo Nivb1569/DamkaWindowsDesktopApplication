@@ -99,7 +99,7 @@ namespace DamkaForm
                 }
                 else
                 {
-                    generateMove(out o_From, out o_To, i_Board);
+                    GenerateMove(out o_From, out o_To, i_Board);
                 }
                 o_IsQuitInput = false;
             }
@@ -398,7 +398,7 @@ namespace DamkaForm
         {
             bool isValid = false;
             // TODO : mabye delete TheMoveIsFromThePlayerSquare
-            if ((isMoveDiagonally(i_From, i_To, i_Board) || isJump(i_From, i_To, i_Board)))
+            if ((isMoveDiagonally(i_From, i_To, i_Board) || IsJump(i_From, i_To, i_Board)))
             {
                 isValid = true;
             }
@@ -451,7 +451,7 @@ namespace DamkaForm
             return isDiagonally;
         }
         // $G$ DSN-003 (-5) The code should be divided to methods. 
-        private bool isJump(Point i_From, Point i_To, Board i_Board)
+        public bool IsJump(Point i_From, Point i_To, Board i_Board)
         {
             bool makeJump = false;
             Piece.e_DirectionType direction = i_Board.GameBoard[i_From.X, i_From.Y].DirectionType;
@@ -528,7 +528,7 @@ namespace DamkaForm
         }
         public void ExecuteMove(Point i_From, Point i_To, Board i_Board)
         {
-            if (!isJump(i_From, i_To, i_Board))
+            if (!IsJump(i_From, i_To, i_Board))
             {
                 i_Board.GameBoard[i_To.X, i_To.Y].PieceType = i_Board.GameBoard[i_From.X, i_From.Y].PieceType;
                 i_Board.GameBoard[i_To.X, i_To.Y].DirectionType = i_Board.GameBoard[i_From.X, i_From.Y].DirectionType;
@@ -583,7 +583,7 @@ namespace DamkaForm
             set { m_NumberOfPieces = value; }
         }
 
-        private void generateMove(out Point o_From, out Point o_To, Board i_Board)
+        public void GenerateMove(out Point o_From, out Point o_To, Board i_Board)
         {
             List<Point[]> possiblePositions = createPossiblePositionsList(i_Board);
             choseNextMove(possiblePositions, out o_From, out o_To, i_Board);
@@ -654,7 +654,7 @@ namespace DamkaForm
                 //if jump choose it!
                 foreach (Point[] points in i_possoblePositions)
                 {
-                    if (isJump(points[0], points[1], i_Board))
+                    if (IsJump(points[0], points[1], i_Board))
                     {
                         o_From = points[0];
                         o_To = points[1];
@@ -736,7 +736,7 @@ namespace DamkaForm
             bool result = false;
             if (isLegalPoint(i_To, i_Board))
             {
-                result = isJump(i_From, i_To, i_Board);
+                result = IsJump(i_From, i_To, i_Board);
             }
 
             return result;
@@ -751,7 +751,7 @@ namespace DamkaForm
 
                 if (isLegalPoint(new Point(i_jumpFrom.X - 2, i_jumpFrom.Y - 2), i_Board))
                 {
-                    if (isJump(i_jumpFrom, new Point(i_jumpFrom.X - 2, i_jumpFrom.Y - 2), i_Board))
+                    if (IsJump(i_jumpFrom, new Point(i_jumpFrom.X - 2, i_jumpFrom.Y - 2), i_Board))
                     {
                         result = true;
                         io_nextJumpMove.Add(new Point[] { i_jumpFrom, new Point(i_jumpFrom.X - 2, i_jumpFrom.Y - 2) });
@@ -760,7 +760,7 @@ namespace DamkaForm
 
                 if (isLegalPoint(new Point(i_jumpFrom.X - 2, i_jumpFrom.Y + 2), i_Board))
                 {
-                    if (isJump(i_jumpFrom, new Point(i_jumpFrom.X - 2, i_jumpFrom.Y + 2), i_Board))
+                    if (IsJump(i_jumpFrom, new Point(i_jumpFrom.X - 2, i_jumpFrom.Y + 2), i_Board))
                     {
                         result = true;
                         io_nextJumpMove.Add(new Point[] { i_jumpFrom, new Point(i_jumpFrom.X - 2, i_jumpFrom.Y + 2) });
@@ -772,7 +772,7 @@ namespace DamkaForm
                 {
                     if (isLegalPoint(new Point(i_jumpFrom.X + 2, i_jumpFrom.Y - 2), i_Board))
                     {
-                        if (isJump(i_jumpFrom, new Point(i_jumpFrom.X + 2, i_jumpFrom.Y - 2), i_Board))
+                        if (IsJump(i_jumpFrom, new Point(i_jumpFrom.X + 2, i_jumpFrom.Y - 2), i_Board))
                         {
                             result = true;
                             io_nextJumpMove.Add(new Point[] { i_jumpFrom, new Point(i_jumpFrom.X + 2, i_jumpFrom.Y - 2) });
@@ -781,7 +781,7 @@ namespace DamkaForm
 
                     if (isLegalPoint(new Point(i_jumpFrom.X + 2, i_jumpFrom.Y + 2), i_Board))
                     {
-                        if (isJump(i_jumpFrom, new Point(i_jumpFrom.X + 2, i_jumpFrom.Y + 2), i_Board))
+                        if (IsJump(i_jumpFrom, new Point(i_jumpFrom.X + 2, i_jumpFrom.Y + 2), i_Board))
                         {
                             result = true;
                             io_nextJumpMove.Add(new Point[] { i_jumpFrom, new Point(i_jumpFrom.X + 2, i_jumpFrom.Y + 2) });
@@ -795,7 +795,7 @@ namespace DamkaForm
 
                 if (isLegalPoint(new Point(i_jumpFrom.X + 2, i_jumpFrom.Y - 2), i_Board))
                 {
-                    if (isJump(i_jumpFrom, new Point(i_jumpFrom.X + 2, i_jumpFrom.Y - 2), i_Board))
+                    if (IsJump(i_jumpFrom, new Point(i_jumpFrom.X + 2, i_jumpFrom.Y - 2), i_Board))
                     {
                         result = true;
                         io_nextJumpMove.Add(new Point[] { i_jumpFrom, new Point(i_jumpFrom.X + 2, i_jumpFrom.Y - 2) });
@@ -803,7 +803,7 @@ namespace DamkaForm
                 }
                 if (isLegalPoint(new Point(i_jumpFrom.X + 2, i_jumpFrom.Y + 2), i_Board))
                 {
-                    if (isJump(i_jumpFrom, new Point(i_jumpFrom.X + 2, i_jumpFrom.Y + 2), i_Board))
+                    if (IsJump(i_jumpFrom, new Point(i_jumpFrom.X + 2, i_jumpFrom.Y + 2), i_Board))
                     {
                         result = true;
                         io_nextJumpMove.Add(new Point[] { i_jumpFrom, new Point(i_jumpFrom.X + 2, i_jumpFrom.Y + 2) });
@@ -815,7 +815,7 @@ namespace DamkaForm
                 {
                     if (isLegalPoint(new Point(i_jumpFrom.X - 2, i_jumpFrom.Y - 2), i_Board))
                     {
-                        if (isJump(i_jumpFrom, new Point(i_jumpFrom.X - 2, i_jumpFrom.Y - 2), i_Board))
+                        if (IsJump(i_jumpFrom, new Point(i_jumpFrom.X - 2, i_jumpFrom.Y - 2), i_Board))
                         {
                             result = true;
                             io_nextJumpMove.Add(new Point[] { i_jumpFrom, new Point(i_jumpFrom.X - 2, i_jumpFrom.Y - 2) });
@@ -823,7 +823,7 @@ namespace DamkaForm
                     }
                     if (isLegalPoint(new Point(i_jumpFrom.X - 2, i_jumpFrom.Y + 2), i_Board))
                     {
-                        if (isJump(i_jumpFrom, new Point(i_jumpFrom.X - 2, i_jumpFrom.Y + 2), i_Board))
+                        if (IsJump(i_jumpFrom, new Point(i_jumpFrom.X - 2, i_jumpFrom.Y + 2), i_Board))
                         {
                             result = true;
                             io_nextJumpMove.Add(new Point[] { i_jumpFrom, new Point(i_jumpFrom.X - 2, i_jumpFrom.Y + 2) });

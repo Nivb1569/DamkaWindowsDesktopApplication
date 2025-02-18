@@ -12,6 +12,8 @@ namespace DamkaForm
         private int m_CellSize = 30;
         private Button m_From = null;
         private Button m_To = null;
+
+
         public DamkaGame(Game i_CurrentGame)
         {
             m_CurrentGame = i_CurrentGame;
@@ -19,10 +21,11 @@ namespace DamkaForm
             this.labelPlayer1.Text = m_CurrentGame.FirstPlayer.PlayerName + ":";
             this.labelPlayer1.BackColor = Color.LightBlue;
             this.labelPlayer2.Text = m_CurrentGame.SecondPlayer.PlayerName + ":";
-            InitializeBoard();
+            initializeBoard();
+            fitFormSize();
         }
 
-        private void InitializeBoard()
+        private void initializeBoard()
         {
             int boardSize = m_CurrentGame.Board.Size;
             boardButtons = new Button[boardSize, boardSize];
@@ -33,11 +36,12 @@ namespace DamkaForm
                 {
                     Button button = new Button();
                     button.Size = new Size(m_CellSize, m_CellSize);
-                    button.Location = new System.Drawing.Point(50 + j * m_CellSize, 50 + i * m_CellSize);
+                    button.Location = new System.Drawing.Point(j * m_CellSize, i * m_CellSize);
                     if (m_CurrentGame.Board.GameBoard[i, j].PieceType != Piece.e_PieceType.Empty)
                     {
                         button.Text = m_CurrentGame.Board.GameBoard[i, j].PieceType.ToString();
                     }
+
                     button.Tag = new System.Drawing.Point(i, j);
                     button.Click += OnCellClick;
 
@@ -52,12 +56,19 @@ namespace DamkaForm
                     }
 
                     boardButtons[i, j] = button;
-                    this.Controls.Add(button);
+                    boardPanel.Controls.Add(button);
                 }
             }
+
+            boardPanel.Size = new Size(boardSize * m_CellSize, boardSize * m_CellSize);
         }
+
         private void OnCellClick(object sender, EventArgs e)
         {
+            if (m_CurrentGame.CurrentPlayer.IsComputer)
+            {
+                return; //TODO: not good we have 2 returns
+            }
             Button clickedButton = sender as Button;
             System.Drawing.Point clickedPoint = (System.Drawing.Point)clickedButton.Tag;
             List<Point[]> o_OptionalJumpsRes;
@@ -92,7 +103,8 @@ namespace DamkaForm
                     if (!isOptimalAnotherJumpsEmpty())
                     {
                         isJumpMove = true;
-                        if (!m_CurrentGame.CurrentPlayer.IsChoiceInList(fromPoint, toPoint, m_CurrentGame.CurrentPlayer.OptionalAnotherJumps))
+                        if (!m_CurrentGame.CurrentPlayer.IsChoiceInList(fromPoint, toPoint,
+                                m_CurrentGame.CurrentPlayer.OptionalAnotherJumps))
                         {
                             // TODO: This to lines get out to funtion, very similar to the next if.
                             MessageBox.Show("You have to keep jumping!");
@@ -131,9 +143,11 @@ namespace DamkaForm
                     if (isJumpMove)
                     {
                         List<Point[]> tempOptionalAnotherJumps;
-                        m_CurrentGame.CurrentPlayer.CheckIfCanJumpAndMakeList(m_CurrentGame.Board, toPoint, out tempOptionalAnotherJumps);
+                        m_CurrentGame.CurrentPlayer.CheckIfCanJumpAndMakeList(m_CurrentGame.Board, toPoint,
+                            out tempOptionalAnotherJumps);
                         m_CurrentGame.CurrentPlayer.OptionalAnotherJumps = tempOptionalAnotherJumps;
                     }
+
                     if (isOptimalAnotherJumpsEmpty())
                     {
                         m_CurrentGame.ChangeTurn();
@@ -155,11 +169,13 @@ namespace DamkaForm
                 {
                     MessageBox.Show("The move is illegal, please try again!");
                 }
+
                 m_From.BackColor = Color.White;
                 m_From = null;
                 m_To = null;
             }
         }
+
         private void updateBoard()
         {
             int boardSize = m_CurrentGame.Board.Size;
@@ -178,15 +194,19 @@ namespace DamkaForm
                 }
             }
         }
+
         private bool isCurrentPlayerPiece(System.Drawing.Point i_ClickedPoint)
         {
-            return m_CurrentGame.CurrentPlayer.TheMoveIsFromThePlayerSquare(m_CurrentGame.Board.GameBoard[i_ClickedPoint.X, i_ClickedPoint.Y].PieceType);
+            return m_CurrentGame.CurrentPlayer.TheMoveIsFromThePlayerSquare(m_CurrentGame.Board
+                .GameBoard[i_ClickedPoint.X, i_ClickedPoint.Y].PieceType);
         }
 
         private bool isOptimalAnotherJumpsEmpty()
         {
-            return m_CurrentGame.CurrentPlayer.OptionalAnotherJumps == null || m_CurrentGame.CurrentPlayer.OptionalAnotherJumps.Count == 0;
+            return m_CurrentGame.CurrentPlayer.OptionalAnotherJumps == null ||
+                   m_CurrentGame.CurrentPlayer.OptionalAnotherJumps.Count == 0;
         }
+
         private void updateLabelBackColor()
         {
             if (m_CurrentGame.CurrentPlayer == m_CurrentGame.FirstPlayer)
@@ -200,6 +220,7 @@ namespace DamkaForm
                 labelPlayer1.BackColor = Color.Empty;
             }
         }
+
         private void showMessageBoxIfTheGameIsOver()
         {
             String messageToDisplay;
@@ -216,7 +237,7 @@ namespace DamkaForm
                 }
 
                 DialogResult result = MessageBox.Show(messageToDisplay, "Damka",
-                MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                    MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
                 if (result == DialogResult.Yes)
                 {
@@ -229,6 +250,7 @@ namespace DamkaForm
                 }
             }
         }
+
         private void prepareAnotherGame()
         {
             updateScore();
@@ -240,7 +262,7 @@ namespace DamkaForm
                 {
                     if (m_CurrentGame.Board.GameBoard[i, j].PieceType != Piece.e_PieceType.Empty)
                     {
-                        boardButtons[i,j].Text = m_CurrentGame.Board.GameBoard[i, j].PieceType.ToString();
+                        boardButtons[i, j].Text = m_CurrentGame.Board.GameBoard[i, j].PieceType.ToString();
                     }
                     else
                     {
@@ -248,17 +270,91 @@ namespace DamkaForm
                     }
                 }
             }
+
             m_CurrentGame.CurrentPlayer = m_CurrentGame.FirstPlayer;
             labelPlayer1.BackColor = Color.LightBlue;
             labelPlayer2.BackColor = Color.Empty;
             m_CurrentGame.Winner = null;
             m_CurrentGame.GameOver = false;
         }
+
         private void updateScore()
         {
             m_CurrentGame.UpdatePlayerPoints();
             Player1Score.Text = m_CurrentGame.FirstPlayer.Points.ToString();
             Player2Score.Text = m_CurrentGame.SecondPlayer.Points.ToString();
+        }
+
+        private void fitFormSize()
+        {
+            int boardSizePixel = m_CurrentGame.Board.Size * m_CellSize;
+            int extraSpace = 100;
+            this.ClientSize = new Size(boardSizePixel + extraSpace, boardSizePixel + extraSpace);
+
+            boardPanel.Location = new System.Drawing.Point(
+                (this.ClientSize.Width - boardPanel.Width) / 2,
+                (this.ClientSize.Height - boardPanel.Height) / 2);
+            panelLabels.Location = new System.Drawing.Point( //TODO: change it!!!!!
+                boardPanel.Left + (boardPanel.Width - panelLabels.Width) / 2, // מרכזים לפי `boardPanel`
+                boardPanel.Top - panelLabels.Height - 10 // ממקמים מעל `boardPanel` עם רווח קטן
+            );
+        }
+
+        private void labelPlayer2_Click(object sender, EventArgs e)
+        {
+            if (m_CurrentGame.CurrentPlayer.IsComputer && labelPlayer2.BackColor == Color.LightBlue)
+            {
+                playComputerTurn();
+            }
+        }
+
+        private void playComputerTurn()
+        {
+            Point o_From, o_To;
+            bool is_jump = false;
+
+            if (!isOptimalAnotherJumpsEmpty())
+            {
+                selectNextMove(out o_From, out o_To, m_CurrentGame.Board);
+            }
+            else
+            {
+                m_CurrentGame.CurrentPlayer.GenerateMove(out o_From, out o_To, m_CurrentGame.Board);
+            }
+
+            if (m_CurrentGame.CurrentPlayer.IsJump(o_From, o_To, m_CurrentGame.Board))
+            {
+                is_jump = true;
+            }
+
+            m_CurrentGame.CurrentPlayer.ExecuteMove(o_From, o_To, m_CurrentGame.Board);
+            m_CurrentGame.Board.UpdateKingCase(m_CurrentGame.CurrentPlayer.PlayerPiece);
+            updateBoard();
+
+            if (is_jump)
+            {
+                List<Point[]> tempOptionalAnotherJumps;
+                m_CurrentGame.CurrentPlayer.CheckIfCanJumpAndMakeList(m_CurrentGame.Board, o_To, out tempOptionalAnotherJumps);
+                m_CurrentGame.CurrentPlayer.OptionalAnotherJumps = tempOptionalAnotherJumps;
+            }
+            else
+            {
+                m_CurrentGame.CurrentPlayer.OptionalAnotherJumps = null;
+            }
+
+            if (isOptimalAnotherJumpsEmpty())
+            {
+                m_CurrentGame.ChangeTurn();
+                updateLabelBackColor();
+            }
+            
+            m_CurrentGame.CheckGameStatus();
+            showMessageBoxIfTheGameIsOver();
+        }
+        private void selectNextMove(out Point o_From, out Point o_To, Board i_Board)
+        {
+            o_From = m_CurrentGame.CurrentPlayer.OptionalAnotherJumps[0][0];
+            o_To = m_CurrentGame.CurrentPlayer.OptionalAnotherJumps[0][1];
         }
     }
 }

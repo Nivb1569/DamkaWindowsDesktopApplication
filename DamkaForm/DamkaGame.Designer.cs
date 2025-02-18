@@ -33,8 +33,8 @@
             this.Player2Score = new System.Windows.Forms.Label();
             this.Player1Score = new System.Windows.Forms.Label();
             this.labelPlayer1 = new System.Windows.Forms.Label();
-            this.panelLabels = new System.Windows.Forms.Panel();
-            this.panelLabels.SuspendLayout();
+            this.lablesPanel = new System.Windows.Forms.Panel();
+            this.lablesPanel.SuspendLayout();
             this.SuspendLayout();
             // 
             // boardPanel
@@ -95,35 +95,35 @@
             this.labelPlayer1.Text = "Player 1:";
             this.labelPlayer1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // panelLabels
+            // lablesPanel
             // 
-            this.panelLabels.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.lablesPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.panelLabels.AutoSize = true;
-            this.panelLabels.BackColor = System.Drawing.SystemColors.Control;
-            this.panelLabels.Controls.Add(this.labelPlayer2);
-            this.panelLabels.Controls.Add(this.Player2Score);
-            this.panelLabels.Controls.Add(this.Player1Score);
-            this.panelLabels.Controls.Add(this.labelPlayer1);
-            this.panelLabels.Location = new System.Drawing.Point(41, 43);
-            this.panelLabels.Name = "panelLabels";
-            this.panelLabels.Size = new System.Drawing.Size(521, 34);
-            this.panelLabels.TabIndex = 5;
+            this.lablesPanel.AutoSize = true;
+            this.lablesPanel.BackColor = System.Drawing.SystemColors.Control;
+            this.lablesPanel.Controls.Add(this.labelPlayer2);
+            this.lablesPanel.Controls.Add(this.Player2Score);
+            this.lablesPanel.Controls.Add(this.Player1Score);
+            this.lablesPanel.Controls.Add(this.labelPlayer1);
+            this.lablesPanel.Location = new System.Drawing.Point(41, 43);
+            this.lablesPanel.Name = "lablesPanel";
+            this.lablesPanel.Size = new System.Drawing.Size(521, 34);
+            this.lablesPanel.TabIndex = 5;
             // 
             // DamkaGame
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(652, 512);
-            this.Controls.Add(this.panelLabels);
+            this.Controls.Add(this.lablesPanel);
             this.Controls.Add(this.boardPanel);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
             this.Name = "DamkaGame";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Damka";
-            this.panelLabels.ResumeLayout(false);
-            this.panelLabels.PerformLayout();
+            this.lablesPanel.ResumeLayout(false);
+            this.lablesPanel.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -135,6 +135,6 @@
         private System.Windows.Forms.Label Player2Score;
         private System.Windows.Forms.Label Player1Score;
         private System.Windows.Forms.Label labelPlayer1;
-        private System.Windows.Forms.Panel panelLabels;
+        private System.Windows.Forms.Panel lablesPanel;
     }
 }

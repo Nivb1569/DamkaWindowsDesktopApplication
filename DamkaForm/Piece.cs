@@ -1,17 +1,15 @@
-﻿using System;
-
-namespace DamkaForm
+﻿namespace DamkaForm
 {
     public class Piece
     {
-        public enum e_DirectionType 
+        public enum e_DirectionType
         {
             Empty,
             Up,
             Down,
             Both
         }
-        public enum e_PieceType 
+        public enum e_PieceType
         {
             Empty,
             X,

@@ -65,117 +65,33 @@ namespace DamkaForm
 
         private void OnCellClick(object sender, EventArgs e)
         {
-            if (m_CurrentGame.CurrentPlayer.IsComputer)
-            {
-                return; //TODO: not good we have 2 returns
-            }
             Button clickedButton = sender as Button;
             System.Drawing.Point clickedPoint = (System.Drawing.Point)clickedButton.Tag;
-            List<Point[]> o_OptionalJumpsRes;
-            bool isJumpMove = false;
-            bool invalidChoice = false;
 
-            if (clickedButton.BackColor == Color.LightBlue)
+            if (m_CurrentGame.CurrentPlayer.IsComputer)
             {
-                m_From = null;
-                clickedButton.BackColor = Color.White;
+                return;
+            }
+
+            if (isButtonHasBeenSelected(clickedButton))
+            {
+                resetSelection(clickedButton);
             }
             else if (m_From == null)
             {
-                if (isCurrentPlayerPiece(clickedPoint))
-                {
-                    m_From = clickedButton;
-                    clickedButton.BackColor = Color.LightBlue;
-                }
+                selectPiece(clickedButton, clickedPoint);
             }
             else if (m_To == null)
             {
                 m_To = clickedButton;
-
-                System.Drawing.Point fromTagPoint = (System.Drawing.Point)m_From.Tag;
-                Point fromPoint = new Point(fromTagPoint.X, fromTagPoint.Y);
-
-                System.Drawing.Point toTagPoint = (System.Drawing.Point)m_To.Tag;
-                Point toPoint = new Point(toTagPoint.X, toTagPoint.Y);
-
-                if (m_CurrentGame.CurrentPlayer.IsLegalMove(fromPoint, toPoint, m_CurrentGame.Board))
+                if (handelMove())
                 {
-                    if (!isOptimalAnotherJumpsEmpty())
-                    {
-                        isJumpMove = true;
-                        if (!m_CurrentGame.CurrentPlayer.IsChoiceInList(fromPoint, toPoint,
-                                m_CurrentGame.CurrentPlayer.OptionalAnotherJumps))
-                        {
-                            // TODO: This to lines get out to funtion, very similar to the next if.
-                            MessageBox.Show("You have to keep jumping!");
-                            invalidChoice = true;
-                        }
-                    }
-                    else if (m_CurrentGame.CurrentPlayer.MustJump(out o_OptionalJumpsRes, m_CurrentGame.Board))
-                    {
-                        isJumpMove = true;
-                        if (!m_CurrentGame.CurrentPlayer.IsChoiceInList(fromPoint, toPoint, o_OptionalJumpsRes))
-                        {
-                            // TODO: This to lines get out to funtion, very similar to the next if.
-                            MessageBox.Show("You must jump!");
-                            invalidChoice = true;
-                        }
-                    }
-                    else
-                    {
-                        m_CurrentGame.CurrentPlayer.OptionalAnotherJumps = null;
-                    }
-
-                    if (invalidChoice)
-                    {
-                        m_From.BackColor = Color.White;
-                        m_From = null;
-                        m_To = null;
-                        return;
-                    }
-
-                    m_CurrentGame.CurrentPlayer.ExecuteMove(fromPoint, toPoint, m_CurrentGame.Board);
-                    // make Move
-                    //updateBoard
-                    // update the player list.
-                    m_CurrentGame.Board.UpdateKingCase(m_CurrentGame.CurrentPlayer.PlayerPiece);
-                    updateBoard();
-                    if (isJumpMove)
-                    {
-                        List<Point[]> tempOptionalAnotherJumps;
-                        m_CurrentGame.CurrentPlayer.CheckIfCanJumpAndMakeList(m_CurrentGame.Board, toPoint,
-                            out tempOptionalAnotherJumps);
-                        m_CurrentGame.CurrentPlayer.OptionalAnotherJumps = tempOptionalAnotherJumps;
-                    }
-
-                    if (isOptimalAnotherJumpsEmpty())
-                    {
-                        m_CurrentGame.ChangeTurn();
-                        updateLabelBackColor();
-                    }
-                    // Keep the turn if I can eat or change
-
-                    // Update king case
-
-                    // Check if someone won.
-                    m_CurrentGame.CheckGameStatus();
-                    showMessageBoxIfTheGameIsOver();
-
-                    // Update score (labels)
-
-                    // Switch color
+                    m_From.BackColor = Color.White;
+                    m_From = null;
+                    m_To = null;
                 }
-                else
-                {
-                    MessageBox.Show("The move is illegal, please try again!");
-                }
-
-                m_From.BackColor = Color.White;
-                m_From = null;
-                m_To = null;
             }
         }
-
         private void updateBoard()
         {
             int boardSize = m_CurrentGame.Board.Size;
@@ -194,19 +110,16 @@ namespace DamkaForm
                 }
             }
         }
-
         private bool isCurrentPlayerPiece(System.Drawing.Point i_ClickedPoint)
         {
             return m_CurrentGame.CurrentPlayer.TheMoveIsFromThePlayerSquare(m_CurrentGame.Board
                 .GameBoard[i_ClickedPoint.X, i_ClickedPoint.Y].PieceType);
         }
-
         private bool isOptimalAnotherJumpsEmpty()
         {
             return m_CurrentGame.CurrentPlayer.OptionalAnotherJumps == null ||
                    m_CurrentGame.CurrentPlayer.OptionalAnotherJumps.Count == 0;
         }
-
         private void updateLabelBackColor()
         {
             if (m_CurrentGame.CurrentPlayer == m_CurrentGame.FirstPlayer)
@@ -220,7 +133,6 @@ namespace DamkaForm
                 labelPlayer1.BackColor = Color.Empty;
             }
         }
-
         private void showMessageBoxIfTheGameIsOver()
         {
             String messageToDisplay;
@@ -250,7 +162,6 @@ namespace DamkaForm
                 }
             }
         }
-
         private void prepareAnotherGame()
         {
             updateScore();
@@ -277,14 +188,12 @@ namespace DamkaForm
             m_CurrentGame.Winner = null;
             m_CurrentGame.GameOver = false;
         }
-
         private void updateScore()
         {
             m_CurrentGame.UpdatePlayerPoints();
             Player1Score.Text = m_CurrentGame.FirstPlayer.Points.ToString();
             Player2Score.Text = m_CurrentGame.SecondPlayer.Points.ToString();
         }
-
         private void fitFormSize()
         {
             int boardSizePixel = m_CurrentGame.Board.Size * m_CellSize;
@@ -294,12 +203,11 @@ namespace DamkaForm
             boardPanel.Location = new System.Drawing.Point(
                 (this.ClientSize.Width - boardPanel.Width) / 2,
                 (this.ClientSize.Height - boardPanel.Height) / 2);
-            panelLabels.Location = new System.Drawing.Point( //TODO: change it!!!!!
-                boardPanel.Left + (boardPanel.Width - panelLabels.Width) / 2, // מרכזים לפי `boardPanel`
-                boardPanel.Top - panelLabels.Height - 10 // ממקמים מעל `boardPanel` עם רווח קטן
+            lablesPanel.Location = new System.Drawing.Point( //TODO: change it!!!!!
+                boardPanel.Left + (boardPanel.Width - lablesPanel.Width) / 2, // מרכזים לפי `boardPanel`
+                boardPanel.Top - lablesPanel.Height - 10 // ממקמים מעל `boardPanel` עם רווח קטן
             );
         }
-
         private void labelPlayer2_Click(object sender, EventArgs e)
         {
             if (m_CurrentGame.CurrentPlayer.IsComputer && labelPlayer2.BackColor == Color.LightBlue)
@@ -307,35 +215,24 @@ namespace DamkaForm
                 playComputerTurn();
             }
         }
-
         private void playComputerTurn()
         {
-            Point o_From, o_To;
-            bool is_jump = false;
+            Point fromPoint, ToPoint;
+            bool isJump = false;
 
             if (!isOptimalAnotherJumpsEmpty())
             {
-                selectNextMove(out o_From, out o_To, m_CurrentGame.Board);
+                selectNextMove(out fromPoint, out ToPoint);
             }
             else
             {
-                m_CurrentGame.CurrentPlayer.GenerateMove(out o_From, out o_To, m_CurrentGame.Board);
+                m_CurrentGame.CurrentPlayer.GenerateMove(out fromPoint, out ToPoint, m_CurrentGame.Board);
             }
-
-            if (m_CurrentGame.CurrentPlayer.IsJump(o_From, o_To, m_CurrentGame.Board))
+            isJump = m_CurrentGame.CurrentPlayer.IsJump(fromPoint, ToPoint, m_CurrentGame.Board);
+            PerformPlayerMove(fromPoint, ToPoint);
+            if (isJump)
             {
-                is_jump = true;
-            }
-
-            m_CurrentGame.CurrentPlayer.ExecuteMove(o_From, o_To, m_CurrentGame.Board);
-            m_CurrentGame.Board.UpdateKingCase(m_CurrentGame.CurrentPlayer.PlayerPiece);
-            updateBoard();
-
-            if (is_jump)
-            {
-                List<Point[]> tempOptionalAnotherJumps;
-                m_CurrentGame.CurrentPlayer.CheckIfCanJumpAndMakeList(m_CurrentGame.Board, o_To, out tempOptionalAnotherJumps);
-                m_CurrentGame.CurrentPlayer.OptionalAnotherJumps = tempOptionalAnotherJumps;
+                makeListIfAnotherJump(ToPoint);
             }
             else
             {
@@ -347,14 +244,143 @@ namespace DamkaForm
                 m_CurrentGame.ChangeTurn();
                 updateLabelBackColor();
             }
-            
+
             m_CurrentGame.CheckGameStatus();
             showMessageBoxIfTheGameIsOver();
         }
-        private void selectNextMove(out Point o_From, out Point o_To, Board i_Board)
-        {
+        private void selectNextMove(out Point o_From, out Point o_To)
+        { // TODO : to logic.
             o_From = m_CurrentGame.CurrentPlayer.OptionalAnotherJumps[0][0];
             o_To = m_CurrentGame.CurrentPlayer.OptionalAnotherJumps[0][1];
+        }
+        protected override void OnFormClosing(FormClosingEventArgs e)
+        {
+            DialogResult result = MessageBox.Show(
+                "This round has finished. Do you wish to quit and start a new round?",
+                "Finish Round",
+                MessageBoxButtons.YesNoCancel,
+                MessageBoxIcon.Question);
+
+            switch (result)
+            {
+                case DialogResult.Yes:
+                    m_CurrentGame.UpdateWinnerPlayer();
+                    prepareAnotherGame();
+                    e.Cancel = true;
+                    break;
+                case DialogResult.No:
+                    break;
+                case DialogResult.Cancel:
+                    e.Cancel = true;
+                    break;
+            }
+
+            base.OnFormClosing(e);
+        }
+        private bool isButtonHasBeenSelected(Button i_ClicketButton)
+        {
+            return i_ClicketButton.BackColor == Color.LightBlue;
+        }
+        private void resetSelection(Button i_ClicketButton)
+        {
+            m_From = null;
+            i_ClicketButton.BackColor = Color.White;
+        }
+        private void selectPiece(Button i_ClicketButton, System.Drawing.Point i_ClickedPoint)
+        {
+            if (isCurrentPlayerPiece(i_ClickedPoint))
+            {
+                m_From = i_ClicketButton;
+                i_ClicketButton.BackColor = Color.LightBlue;
+            }
+        }
+        private bool handelMove()
+        {
+            bool returnRes = true;
+            System.Drawing.Point fromTagPoint = (System.Drawing.Point)m_From.Tag;
+            Point fromPoint = new Point(fromTagPoint.X, fromTagPoint.Y);
+
+            System.Drawing.Point toTagPoint = (System.Drawing.Point)m_To.Tag;
+            Point toPoint = new Point(toTagPoint.X, toTagPoint.Y);
+
+            if (m_CurrentGame.CurrentPlayer.IsLegalMove(fromPoint, toPoint, m_CurrentGame.Board))
+            {
+                returnRes = validateJump(fromPoint, toPoint);
+            }
+            else
+            {
+                MessageBox.Show("The move is illegal, please try again!");
+            }
+
+            return returnRes;
+        }
+        private bool validateJump(Point i_FromPoint, Point i_ToPoint)
+        {
+            bool returnRes = true;
+            bool isJumpMove = false;
+            bool invalidChoice = false;
+            List<Point[]> o_OptionalJumpsRes;
+
+            if (!isOptimalAnotherJumpsEmpty())
+            {
+                handelSelection(i_FromPoint, i_ToPoint, ref invalidChoice, ref isJumpMove, m_CurrentGame.CurrentPlayer.OptionalAnotherJumps, "You have to keep jumping!");
+            }
+            else if (m_CurrentGame.CurrentPlayer.MustJump(out o_OptionalJumpsRes, m_CurrentGame.Board))
+            {
+                handelSelection(i_FromPoint, i_ToPoint, ref invalidChoice, ref isJumpMove, o_OptionalJumpsRes, "You must jump!");
+            }
+            else
+            {
+                m_CurrentGame.CurrentPlayer.OptionalAnotherJumps = null;
+            }
+
+            if (invalidChoice)
+            {
+                m_From.BackColor = Color.White;
+                m_From = null;
+                m_To = null;
+                returnRes = false;
+            }
+            else
+            {
+                PerformPlayerMove(i_FromPoint, i_ToPoint);
+                if (isJumpMove)
+                {
+                    makeListIfAnotherJump(i_ToPoint);
+                }
+                if (isOptimalAnotherJumpsEmpty())
+                {
+                    m_CurrentGame.ChangeTurn();
+                    updateLabelBackColor();
+                }
+                m_CurrentGame.CheckGameStatus();
+                showMessageBoxIfTheGameIsOver();
+            }
+            return returnRes;
+        }
+        private void handelSelection(Point i_FromPoint, Point i_ToPoint, ref bool io_InvalidChoice, ref bool i_IsJumpMove, List<Point[]> i_ListPoints, String i_Message)
+        {
+            i_IsJumpMove = true;
+
+            if (!m_CurrentGame.CurrentPlayer.IsChoiceInList(i_FromPoint, i_ToPoint, i_ListPoints))
+            {
+                MessageBox.Show(i_Message);
+                io_InvalidChoice = true;
+            }
+        }
+        private void PerformPlayerMove(Point i_FromPoint, Point i_ToPoint)
+        {
+            m_CurrentGame.CurrentPlayer.ExecuteMove(i_FromPoint, i_ToPoint, m_CurrentGame.Board);
+            m_CurrentGame.Board.UpdateKingCase(m_CurrentGame.CurrentPlayer.PlayerPiece);
+            updateBoard();
+        }
+        public void makeListIfAnotherJump(Point i_ToPoint)
+        {
+            List<Point[]> tempOptionalAnotherJumps;
+
+            m_CurrentGame.CurrentPlayer.CheckIfCanJumpAndMakeList(m_CurrentGame.Board, i_ToPoint,
+                out tempOptionalAnotherJumps);
+            m_CurrentGame.CurrentPlayer.OptionalAnotherJumps = tempOptionalAnotherJumps;
         }
     }
 }

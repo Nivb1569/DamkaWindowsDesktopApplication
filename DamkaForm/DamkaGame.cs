@@ -12,19 +12,24 @@ namespace DamkaForm
         private int m_CellSize = 30;
         private Button m_From = null;
         private Button m_To = null;
+        private bool m_isExiting = false;
 
 
         public DamkaGame(Game i_CurrentGame)
         {
             m_CurrentGame = i_CurrentGame;
             InitializeComponent();
-            this.labelPlayer1.Text = m_CurrentGame.FirstPlayer.PlayerName + ":";
-            this.labelPlayer1.BackColor = Color.LightBlue;
-            this.labelPlayer2.Text = m_CurrentGame.SecondPlayer.PlayerName + ":";
+            initializeLabels();
             initializeBoard();
             fitFormSize();
         }
 
+        private void initializeLabels()
+        {
+            this.labelPlayer1.Text = m_CurrentGame.FirstPlayer.PlayerName + ":";
+            this.labelPlayer1.BackColor = Color.LightBlue;
+            this.labelPlayer2.Text = m_CurrentGame.SecondPlayer.PlayerName + ":";
+        }
         private void initializeBoard()
         {
             int boardSize = m_CurrentGame.Board.Size;
@@ -62,7 +67,6 @@ namespace DamkaForm
 
             boardPanel.Size = new Size(boardSize * m_CellSize, boardSize * m_CellSize);
         }
-
         private void OnCellClick(object sender, EventArgs e)
         {
             Button clickedButton = sender as Button;
@@ -157,8 +161,8 @@ namespace DamkaForm
                 }
                 else
                 {
+                    m_isExiting = true;
                     this.Close();
-                    this.Dispose();
                 }
             }
         }
@@ -203,9 +207,10 @@ namespace DamkaForm
             boardPanel.Location = new System.Drawing.Point(
                 (this.ClientSize.Width - boardPanel.Width) / 2,
                 (this.ClientSize.Height - boardPanel.Height) / 2);
-            lablesPanel.Location = new System.Drawing.Point( //TODO: change it!!!!!
-                boardPanel.Left + (boardPanel.Width - lablesPanel.Width) / 2, // מרכזים לפי `boardPanel`
-                boardPanel.Top - lablesPanel.Height - 10 // ממקמים מעל `boardPanel` עם רווח קטן
+
+            flowLayoutPanelLabels.Location = new System.Drawing.Point(
+                boardPanel.Left + (boardPanel.Width - flowLayoutPanelLabels.Width) / 2,
+                boardPanel.Top - flowLayoutPanelLabels.Height - 10
             );
         }
         private void labelPlayer2_Click(object sender, EventArgs e)
@@ -255,26 +260,28 @@ namespace DamkaForm
         }
         protected override void OnFormClosing(FormClosingEventArgs e)
         {
-            DialogResult result = MessageBox.Show(
-                "This round has finished. Do you wish to quit and start a new round?",
-                "Finish Round",
-                MessageBoxButtons.YesNoCancel,
-                MessageBoxIcon.Question);
-
-            switch (result)
+            if (!m_isExiting)
             {
-                case DialogResult.Yes:
-                    m_CurrentGame.UpdateWinnerPlayer();
-                    prepareAnotherGame();
-                    e.Cancel = true;
-                    break;
-                case DialogResult.No:
-                    break;
-                case DialogResult.Cancel:
-                    e.Cancel = true;
-                    break;
-            }
+                DialogResult result = MessageBox.Show(
+                    "This round has finished. Do you wish to quit and start a new round?",
+                    "Finish Round",
+                    MessageBoxButtons.YesNoCancel,
+                    MessageBoxIcon.Question);
 
+                switch (result)
+                {
+                    case DialogResult.Yes:
+                        m_CurrentGame.UpdateWinnerPlayer();
+                        prepareAnotherGame();
+                        e.Cancel = true;
+                        break;
+                    case DialogResult.No:
+                        break;
+                    case DialogResult.Cancel:
+                        e.Cancel = true;
+                        break;
+                }
+            }
             base.OnFormClosing(e);
         }
         private bool isButtonHasBeenSelected(Button i_ClicketButton)

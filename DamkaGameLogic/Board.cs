@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Security.Cryptography;
 
-namespace DamkaForm
+namespace DamkaGameLogic
 {
     public class Board
     {

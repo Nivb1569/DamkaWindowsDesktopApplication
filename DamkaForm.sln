@@ -5,6 +5,8 @@ VisualStudioVersion = 17.3.32929.385
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DamkaForm", "DamkaForm\DamkaForm.csproj", "{BF9EE947-E9E2-49F1-81E0-05E64ACDA113}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DamkaGameLogic", "DamkaGameLogic\DamkaGameLogic.csproj", "{4C577B25-A292-4A73-AD6A-04E7F811FD3C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{BF9EE947-E9E2-49F1-81E0-05E64ACDA113}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BF9EE947-E9E2-49F1-81E0-05E64ACDA113}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BF9EE947-E9E2-49F1-81E0-05E64ACDA113}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4C577B25-A292-4A73-AD6A-04E7F811FD3C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4C577B25-A292-4A73-AD6A-04E7F811FD3C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4C577B25-A292-4A73-AD6A-04E7F811FD3C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4C577B25-A292-4A73-AD6A-04E7F811FD3C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

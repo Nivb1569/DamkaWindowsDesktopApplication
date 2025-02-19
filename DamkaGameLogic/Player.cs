@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Security.Cryptography;
 
-namespace DamkaForm
+namespace DamkaGameLogic
 {
     public class Player
     {
@@ -522,5 +523,12 @@ namespace DamkaForm
         {
             get { return m_Points; }
         }
+
+        public void SelectNextMove(out  Point o_FromPoint, out Point o_ToPoint)
+        {
+            o_FromPoint = m_OptionalAnotherJumps[0][0];
+            o_ToPoint = m_OptionalAnotherJumps[0][1];
+        }
     }
+
 }

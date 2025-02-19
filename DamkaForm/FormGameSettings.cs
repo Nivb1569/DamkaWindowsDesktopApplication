@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows.Forms;
+using DamkaGameLogic;
 
 namespace DamkaForm
 {
@@ -25,8 +26,6 @@ namespace DamkaForm
         {
             InitializeComponent();
         }
-
-
         private void checkBox1_CheckedChanged(object sender, EventArgs e)
         {
             textBoxSecondPlayer.Enabled = !textBoxSecondPlayer.Enabled;
@@ -39,10 +38,10 @@ namespace DamkaForm
                 textBoxSecondPlayer.Text = "[Computer]";
             }
         }
-
         private void buttonDone_Click(object sender, EventArgs e)
         {
             m_FirstPlayer = textBoxFirstPlayer.Text;
+
             if (checkBoxSecondPlayer.Checked)
             {
                 m_SecondPlayer = textBoxSecondPlayer.Text;
@@ -64,6 +63,7 @@ namespace DamkaForm
             {
                 m_BoardSize = 10;
             }
+
             this.DialogResult = DialogResult.OK;
             this.Close();
         }

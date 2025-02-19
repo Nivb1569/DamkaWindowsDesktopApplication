@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace DamkaForm
+namespace DamkaGameLogic
 {
     public class Point
     {

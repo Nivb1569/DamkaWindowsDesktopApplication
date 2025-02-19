@@ -1,4 +1,5 @@
 ﻿using System.Windows.Forms;
+using DamkaGameLogic;
 
 namespace DamkaForm
 {
@@ -15,7 +16,6 @@ namespace DamkaForm
 
             Game game = new Game(formGameSettings.BoardSize, formGameSettings.FirstPlayer, formGameSettings.SecondPlayer);
             game.SetTheNumberOfPicesToThePlayers();
-
             DamkaGame damkaGame = new DamkaGame(game);
             damkaGame.ShowDialog();
         }

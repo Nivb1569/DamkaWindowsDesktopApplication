@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace DamkaForm
+namespace DamkaGameLogic
 {
     public class Game
     {
@@ -41,6 +41,11 @@ namespace DamkaForm
             get { return m_Winner; }
             set { m_Winner = value; }
         }
+        public bool GameOver
+        {
+            get { return m_GameOver; }
+            set { m_GameOver = value; }
+        }
         public void UpdatePlayerPoints()
         {
             if (m_Winner != null)
@@ -58,6 +63,7 @@ namespace DamkaForm
         private int calcPoints(Player i_Player)
         {
             int counterPoints = 0;
+
             for (int i = 0; i < m_Board.Size; i++)
             {
                 for (int j = 0; j < m_Board.Size; j++)
@@ -108,11 +114,6 @@ namespace DamkaForm
                 m_FirstPlayer.NumberOfPieces = 20;
                 m_SecondPlayer.NumberOfPieces = 20;
             }
-        }
-        public bool GameOver
-        {
-            get { return m_GameOver; }
-            set { m_GameOver = value; }
         }
         public void UpdateWinnerPlayer()
         {

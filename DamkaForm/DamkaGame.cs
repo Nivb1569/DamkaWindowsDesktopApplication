@@ -2,6 +2,10 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
+using DamkaGameLogic;
+using SDPoint = System.Drawing.Point;
+using DLPoint = DamkaGameLogic.Point; 
+
 
 namespace DamkaForm
 {
@@ -41,13 +45,13 @@ namespace DamkaForm
                 {
                     Button button = new Button();
                     button.Size = new Size(m_CellSize, m_CellSize);
-                    button.Location = new System.Drawing.Point(j * m_CellSize, i * m_CellSize);
+                    button.Location = new SDPoint(j * m_CellSize, i * m_CellSize);
                     if (m_CurrentGame.Board.GameBoard[i, j].PieceType != Piece.e_PieceType.Empty)
                     {
                         button.Text = m_CurrentGame.Board.GameBoard[i, j].PieceType.ToString();
                     }
 
-                    button.Tag = new System.Drawing.Point(i, j);
+                    button.Tag = new SDPoint(i, j);
                     button.Click += OnCellClick;
 
                     if ((i + j) % 2 == 0)
@@ -64,13 +68,12 @@ namespace DamkaForm
                     boardPanel.Controls.Add(button);
                 }
             }
-
             boardPanel.Size = new Size(boardSize * m_CellSize, boardSize * m_CellSize);
         }
         private void OnCellClick(object sender, EventArgs e)
         {
             Button clickedButton = sender as Button;
-            System.Drawing.Point clickedPoint = (System.Drawing.Point)clickedButton.Tag;
+            SDPoint clickedPoint = (SDPoint)clickedButton.Tag;
 
             if (m_CurrentGame.CurrentPlayer.IsComputer)
             {
@@ -99,6 +102,7 @@ namespace DamkaForm
         private void updateBoard()
         {
             int boardSize = m_CurrentGame.Board.Size;
+
             for (int i = 0; i < boardSize; i++)
             {
                 for (int j = 0; j < boardSize; j++)
@@ -114,7 +118,7 @@ namespace DamkaForm
                 }
             }
         }
-        private bool isCurrentPlayerPiece(System.Drawing.Point i_ClickedPoint)
+        private bool isCurrentPlayerPiece(SDPoint i_ClickedPoint)
         {
             return m_CurrentGame.CurrentPlayer.TheMoveIsFromThePlayerSquare(m_CurrentGame.Board
                 .GameBoard[i_ClickedPoint.X, i_ClickedPoint.Y].PieceType);
@@ -145,11 +149,11 @@ namespace DamkaForm
             {
                 if (m_CurrentGame.Winner != null)
                 {
-                    messageToDisplay = $"{m_CurrentGame.Winner.PlayerName} Won!\nAnother Round?"; // TODO : /n
+                    messageToDisplay = $"{m_CurrentGame.Winner.PlayerName} Won!{Environment.NewLine}Another Round?"; 
                 }
                 else
                 {
-                    messageToDisplay = "Tie!\nAnother Round?"; // TODO : /n
+                    messageToDisplay = $"Tie!{Environment.NewLine}Another Round?";
                 }
 
                 DialogResult result = MessageBox.Show(messageToDisplay, "Damka",
@@ -171,6 +175,7 @@ namespace DamkaForm
             updateScore();
             m_CurrentGame.SetTheNumberOfPicesToThePlayers();
             m_CurrentGame.Board = new Board(m_CurrentGame.Board.Size);
+
             for (int i = 0; i < m_CurrentGame.Board.Size; i++)
             {
                 for (int j = 0; j < m_CurrentGame.Board.Size; j++)
@@ -204,11 +209,11 @@ namespace DamkaForm
             int extraSpace = 100;
             this.ClientSize = new Size(boardSizePixel + extraSpace, boardSizePixel + extraSpace);
 
-            boardPanel.Location = new System.Drawing.Point(
+            boardPanel.Location = new SDPoint(
                 (this.ClientSize.Width - boardPanel.Width) / 2,
                 (this.ClientSize.Height - boardPanel.Height) / 2);
 
-            flowLayoutPanelLabels.Location = new System.Drawing.Point(
+            flowLayoutPanelLabels.Location = new SDPoint(
                 boardPanel.Left + (boardPanel.Width - flowLayoutPanelLabels.Width) / 2,
                 boardPanel.Top - flowLayoutPanelLabels.Height - 10
             );
@@ -222,17 +227,18 @@ namespace DamkaForm
         }
         private void playComputerTurn()
         {
-            Point fromPoint, ToPoint;
-            bool isJump = false;
+            DLPoint fromPoint, ToPoint;
+            bool isJump;
 
             if (!isOptimalAnotherJumpsEmpty())
             {
-                selectNextMove(out fromPoint, out ToPoint);
+                m_CurrentGame.CurrentPlayer.SelectNextMove(out fromPoint, out ToPoint);
             }
             else
             {
                 m_CurrentGame.CurrentPlayer.GenerateMove(out fromPoint, out ToPoint, m_CurrentGame.Board);
             }
+
             isJump = m_CurrentGame.CurrentPlayer.IsJump(fromPoint, ToPoint, m_CurrentGame.Board);
             PerformPlayerMove(fromPoint, ToPoint);
             if (isJump)
@@ -252,11 +258,6 @@ namespace DamkaForm
 
             m_CurrentGame.CheckGameStatus();
             showMessageBoxIfTheGameIsOver();
-        }
-        private void selectNextMove(out Point o_From, out Point o_To)
-        { // TODO : to logic.
-            o_From = m_CurrentGame.CurrentPlayer.OptionalAnotherJumps[0][0];
-            o_To = m_CurrentGame.CurrentPlayer.OptionalAnotherJumps[0][1];
         }
         protected override void OnFormClosing(FormClosingEventArgs e)
         {
@@ -282,6 +283,7 @@ namespace DamkaForm
                         break;
                 }
             }
+
             base.OnFormClosing(e);
         }
         private bool isButtonHasBeenSelected(Button i_ClicketButton)
@@ -293,7 +295,7 @@ namespace DamkaForm
             m_From = null;
             i_ClicketButton.BackColor = Color.White;
         }
-        private void selectPiece(Button i_ClicketButton, System.Drawing.Point i_ClickedPoint)
+        private void selectPiece(Button i_ClicketButton, SDPoint i_ClickedPoint)
         {
             if (isCurrentPlayerPiece(i_ClickedPoint))
             {
@@ -304,11 +306,10 @@ namespace DamkaForm
         private bool handelMove()
         {
             bool returnRes = true;
-            System.Drawing.Point fromTagPoint = (System.Drawing.Point)m_From.Tag;
-            Point fromPoint = new Point(fromTagPoint.X, fromTagPoint.Y);
-
-            System.Drawing.Point toTagPoint = (System.Drawing.Point)m_To.Tag;
-            Point toPoint = new Point(toTagPoint.X, toTagPoint.Y);
+            SDPoint fromTagPoint = (SDPoint)m_From.Tag;
+            DLPoint fromPoint = new DLPoint(fromTagPoint.X, fromTagPoint.Y);
+            SDPoint toTagPoint = (SDPoint)m_To.Tag;
+            DLPoint toPoint = new DLPoint(toTagPoint.X, toTagPoint.Y);
 
             if (m_CurrentGame.CurrentPlayer.IsLegalMove(fromPoint, toPoint, m_CurrentGame.Board))
             {
@@ -321,12 +322,12 @@ namespace DamkaForm
 
             return returnRes;
         }
-        private bool validateJump(Point i_FromPoint, Point i_ToPoint)
+        private bool validateJump(DLPoint i_FromPoint, DLPoint i_ToPoint)
         {
             bool returnRes = true;
             bool isJumpMove = false;
             bool invalidChoice = false;
-            List<Point[]> o_OptionalJumpsRes;
+            List<DLPoint[]> o_OptionalJumpsRes;
 
             if (!isOptimalAnotherJumpsEmpty())
             {
@@ -365,7 +366,7 @@ namespace DamkaForm
             }
             return returnRes;
         }
-        private void handelSelection(Point i_FromPoint, Point i_ToPoint, ref bool io_InvalidChoice, ref bool i_IsJumpMove, List<Point[]> i_ListPoints, String i_Message)
+        private void handelSelection(DLPoint i_FromPoint, DLPoint i_ToPoint, ref bool io_InvalidChoice, ref bool i_IsJumpMove, List<DLPoint[]> i_ListPoints, String i_Message)
         {
             i_IsJumpMove = true;
 
@@ -375,15 +376,15 @@ namespace DamkaForm
                 io_InvalidChoice = true;
             }
         }
-        private void PerformPlayerMove(Point i_FromPoint, Point i_ToPoint)
+        private void PerformPlayerMove(DLPoint i_FromPoint, DLPoint i_ToPoint)
         {
             m_CurrentGame.CurrentPlayer.ExecuteMove(i_FromPoint, i_ToPoint, m_CurrentGame.Board);
             m_CurrentGame.Board.UpdateKingCase(m_CurrentGame.CurrentPlayer.PlayerPiece);
             updateBoard();
         }
-        public void makeListIfAnotherJump(Point i_ToPoint)
+        public void makeListIfAnotherJump(DLPoint i_ToPoint)
         {
-            List<Point[]> tempOptionalAnotherJumps;
+            List<DLPoint[]> tempOptionalAnotherJumps;
 
             m_CurrentGame.CurrentPlayer.CheckIfCanJumpAndMakeList(m_CurrentGame.Board, i_ToPoint,
                 out tempOptionalAnotherJumps);

@@ -1,4 +1,4 @@
-﻿namespace DamkaForm
+﻿namespace DamkaGameLogic
 {
     public class Piece
     {

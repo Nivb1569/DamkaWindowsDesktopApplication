@@ -1,12 +1,9 @@
-﻿using System;
-using System.Security.Cryptography;
-
-namespace DamkaGameLogic
+﻿namespace DamkaGameLogic
 {
     public class Board
     {
-        private int m_Size;
-        private Piece[,] m_GameBoard;
+        private readonly int m_Size;
+        private readonly Piece[,] m_GameBoard;
 
         public Board(int i_Size)
         {
@@ -21,37 +18,6 @@ namespace DamkaGameLogic
         public int Size
         {
             get { return m_Size;}
-        }
-        //public static int GetSize()
-        //{
-        //    bool isValid = false;
-        //    int size = 0; //need to delete
-        //    while (!isValid)
-        //    {
-        //        Console.WriteLine("Enter the board size (6, 8 or 10): ");
-        //        String input = Console.ReadLine();
-        //        if (int.TryParse(input, out size))
-        //        {
-        //            if (!isValidSize(size))
-        //            {
-        //                Console.WriteLine("Invalid input! Only 6, 8 or 10 are valid sizes.");
-        //            }
-        //            else
-        //            {
-        //                isValid = true;
-        //            }
-        //        }
-        //        else
-        //        {
-        //            Console.WriteLine("Invalid input! Only 6, 8 or 10 are valid sizes.");
-        //        }
-        //    }
-
-        //    return size;
-        //}
-        private static bool isValidSize(int i_Size)
-        {
-            return i_Size == 6 || i_Size == 8 || i_Size == 10;
         }
         private void initializeBoard(Piece.e_PieceType i_FirstPiece, Piece.e_PieceType i_SecondPiece)
         {
@@ -85,71 +51,6 @@ namespace DamkaGameLogic
                 }
             }
         }
-        // $G$ NTT-999 (-10) Should use Environment.NewLine rather than \n.
-        public void PrintBoard()
-        {
-            char rows = 'A';
-            printHeader();
-
-            for (int i = 0; i < m_Size; i++)
-            {
-                printSep();
-                Console.Write(rows++);  
-
-                for (int j = 0; j < m_Size; j++)
-                {
-                    printCell(m_GameBoard[i, j].PieceType);
-                }
-                Console.Write("|\n");
-            }
-            printSep();
-        }
-        private void printSep()
-        {
-            for (int i = 0; i < m_Size * 4 + 2; i++)
-            {
-                Console.Write("=");
-            }
-            Console.WriteLine();
-        }
-        private void printHeader()
-        {
-            char columns = 'a';
-            Console.WriteLine();
-
-            for (int i = 0; i < m_Size; i++)
-            {
-                if (i == 0)
-                {
-                    Console.Write(" ");
-                }
-                Console.Write("  " + columns++ + " ");
-            }
-            Console.WriteLine();
-        }
-        private void printCell(Piece.e_PieceType i_Cell)
-        {
-            if (i_Cell == Piece.e_PieceType.Empty)
-            {
-                Console.Write("|   ");
-            }
-            else if (i_Cell == Piece.e_PieceType.X)
-            {
-                Console.Write("| X ");
-            }
-            else if (i_Cell == Piece.e_PieceType.O)
-            {
-                Console.Write("| O ");
-            }
-            else if (i_Cell == Piece.e_PieceType.K)
-            {
-                Console.Write("| K ");
-            }
-            else if (i_Cell == Piece.e_PieceType.U)
-            {
-                Console.Write("| U ");
-            }
-        }
         public void UpdateKingCase(Piece.e_PieceType i_PlayerPiece)
         {
             if (i_PlayerPiece == Piece.e_PieceType.X)
@@ -175,6 +76,5 @@ namespace DamkaGameLogic
                 }
             }
         }
-
     }
 }

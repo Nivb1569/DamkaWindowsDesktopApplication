@@ -1,8 +1,4 @@
-﻿using System;
-using System.Windows.Forms;
-using DamkaGameLogic;
-
-namespace DamkaForm
+﻿namespace DamkaForm
 {
     class Program
     {

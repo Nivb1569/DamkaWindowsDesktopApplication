@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Security.Cryptography;
 
 namespace DamkaGameLogic
 {
@@ -36,6 +35,15 @@ namespace DamkaGameLogic
         public bool IsComputer
         {
             get { return r_IsComputer; }
+        }
+        public int NumberOfPieces
+        {
+            get { return m_NumberOfPieces; }
+            set { m_NumberOfPieces = value; }
+        }
+        public int Points
+        {
+            get { return m_Points; }
         }
         public bool IsChoiceInList(Point i_From, Point i_To, List<Point[]> i_ListOfPoints)
         {
@@ -258,11 +266,6 @@ namespace DamkaGameLogic
         {
             return i_From.X + 2 == i_To.X && i_From.Y - 2 == i_To.Y;
         }
-        public int NumberOfPieces
-        {
-            get { return m_NumberOfPieces; }
-            set { m_NumberOfPieces = value; }
-        }
         public void GenerateMove(out Point o_From, out Point o_To, Board i_Board)
         {
             List<Point[]> possiblePositions = createPossiblePositionsList(i_Board);
@@ -309,7 +312,6 @@ namespace DamkaGameLogic
                 Point currentTo7 = new Point(i_CurrentFrom.X - 2, i_CurrentFrom.Y + 2);
                 checkLegalAndAddToList(i_Board, i_CurrentFrom, currentTo7, io_PossiblePositions);
             }
-
         }
         private void checkLegalAndAddToList(Board i_Board, Point i_CurrentFrom, Point i_CurrentTo, List<Point[]> io_PossiblePositions)
         {
@@ -519,11 +521,6 @@ namespace DamkaGameLogic
         {
             m_Points += i_Points;
         }
-        public int Points
-        {
-            get { return m_Points; }
-        }
-
         public void SelectNextMove(out  Point o_FromPoint, out Point o_ToPoint)
         {
             o_FromPoint = m_OptionalAnotherJumps[0][0];

@@ -24,7 +24,6 @@
         {
             m_Piece = i_PieceType;
             m_Direction = i_DirectionType;
-
         }
         public Piece.e_PieceType PieceType
         {

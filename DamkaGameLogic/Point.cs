@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace DamkaGameLogic
+﻿namespace DamkaGameLogic
 {
     public class Point
     {

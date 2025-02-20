@@ -53,6 +53,11 @@
     </Compile>
     <Compile Include="GameManager.cs" />
     <Compile Include="Program.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -68,12 +73,28 @@
     <EmbeddedResource Include="FormGameSettings.resx">
       <DependentUpon>FormGameSettings.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DamkaGameLogic\DamkaGameLogic.csproj">
       <Project>{4c577b25-a292-4a73-ad6a-04e7f811fd3c}</Project>
       <Name>DamkaGameLogic</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\black.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\blackKing.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\red.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\redKing.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

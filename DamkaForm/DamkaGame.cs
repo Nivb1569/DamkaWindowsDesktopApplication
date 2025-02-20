@@ -50,13 +50,8 @@ namespace DamkaForm
                 {
                     Button button = new Button();
                     button.Size = new Size(m_CellSize, m_CellSize);
-                    button.Font = new Font("Arial", m_CellSize / 3, FontStyle.Bold);
                     button.Location = new SDPoint(j * m_CellSize, i * m_CellSize);
-                    if (m_CurrentGame.Board.GameBoard[i, j].PieceType != Piece.e_PieceType.Empty)
-                    {
-                        button.Text = m_CurrentGame.Board.GameBoard[i, j].PieceType.ToString();
-                    }
-
+                    addIcons(button, i, j);
                     button.Tag = new SDPoint(i, j);
                     button.Click += OnCellClick;
 
@@ -75,6 +70,25 @@ namespace DamkaForm
                 }
             }
             boardPanel.Size = new Size(boardSize * m_CellSize, boardSize * m_CellSize);
+        }
+        private void addIcons(Button i_Button, int i, int j)
+        {
+            if (m_CurrentGame.Board.GameBoard[i, j].PieceType == Piece.e_PieceType.X)
+            {
+                i_Button.Image = Properties.Resources.black;
+                i_Button.Image = new Bitmap(Properties.Resources.black, new Size(m_CellSize - 10, m_CellSize - 10));
+            }
+            else if (m_CurrentGame.Board.GameBoard[i, j].PieceType == Piece.e_PieceType.O)
+            {
+                i_Button.Image = Properties.Resources.red;
+                i_Button.Image = new Bitmap(Properties.Resources.red, new Size(m_CellSize - 10, m_CellSize - 10));
+            }
+            else
+            {
+                i_Button.Image = null; 
+            }
+            i_Button.ImageAlign = ContentAlignment.MiddleCenter;
+
         }
         private void OnCellClick(object sender, EventArgs e)
         {
@@ -113,13 +127,29 @@ namespace DamkaForm
             {
                 for (int j = 0; j < boardSize; j++)
                 {
-                    if (m_CurrentGame.Board.GameBoard[i, j].PieceType == Piece.e_PieceType.Empty)
+                    if (m_CurrentGame.Board.GameBoard[i, j].PieceType == Piece.e_PieceType.X)
                     {
-                        boardButtons[i, j].Text = "";
+                        boardButtons[i, j].Image = Properties.Resources.black;
+                        boardButtons[i, j].Image = new Bitmap(Properties.Resources.black, new Size(m_CellSize - 10, m_CellSize - 10));
+                    }
+                    else if (m_CurrentGame.Board.GameBoard[i, j].PieceType == Piece.e_PieceType.O)
+                    {
+                        boardButtons[i, j].Image = Properties.Resources.red;
+                        boardButtons[i, j].Image = new Bitmap(Properties.Resources.red, new Size(m_CellSize - 10, m_CellSize - 10));
+                    }
+                    else if (m_CurrentGame.Board.GameBoard[i, j].PieceType == Piece.e_PieceType.K)
+                    {
+                        boardButtons[i, j].Image = Properties.Resources.blackKing;
+                        boardButtons[i, j].Image = new Bitmap(Properties.Resources.blackKing, new Size(m_CellSize - 10, m_CellSize - 10));
+                    }
+                    else if (m_CurrentGame.Board.GameBoard[i, j].PieceType == Piece.e_PieceType.U)
+                    {
+                        boardButtons[i, j].Image = Properties.Resources.redKing;
+                        boardButtons[i, j].Image = new Bitmap(Properties.Resources.redKing, new Size(m_CellSize - 10, m_CellSize - 10));
                     }
                     else
                     {
-                        boardButtons[i, j].Text = m_CurrentGame.Board.GameBoard[i, j].PieceType.ToString();
+                        boardButtons[i, j].Image = null;
                     }
                 }
             }
@@ -186,14 +216,7 @@ namespace DamkaForm
             {
                 for (int j = 0; j < m_CurrentGame.Board.Size; j++)
                 {
-                    if (m_CurrentGame.Board.GameBoard[i, j].PieceType != Piece.e_PieceType.Empty)
-                    {
-                        boardButtons[i, j].Text = m_CurrentGame.Board.GameBoard[i, j].PieceType.ToString();
-                    }
-                    else
-                    {
-                        boardButtons[i, j].Text = "";
-                    }
+                    addIcons(boardButtons[i, j], i, j);
                 }
             }
 
@@ -388,7 +411,7 @@ namespace DamkaForm
             m_CurrentGame.Board.UpdateKingCase(m_CurrentGame.CurrentPlayer.PlayerPiece);
             updateBoard();
         }
-        public void makeListIfAnotherJump(DLPoint i_ToPoint)
+        private void makeListIfAnotherJump(DLPoint i_ToPoint)
         {
             List<DLPoint[]> tempOptionalAnotherJumps;
 

@@ -13,7 +13,7 @@ namespace DamkaForm
     {
         private Game m_CurrentGame;
         private Button[,] boardButtons;
-        private int m_CellSize = 30;
+        private int m_CellSize = 50;
         private Button m_From = null;
         private Button m_To = null;
         private bool m_isExiting = false;
@@ -30,9 +30,14 @@ namespace DamkaForm
 
         private void initializeLabels()
         {
-            this.labelPlayer1.Text = m_CurrentGame.FirstPlayer.PlayerName + ":";
-            this.labelPlayer1.BackColor = Color.LightBlue;
-            this.labelPlayer2.Text = m_CurrentGame.SecondPlayer.PlayerName + ":";
+            labelPlayer1.Text = m_CurrentGame.FirstPlayer.PlayerName + ":";
+            labelPlayer1.BackColor = Color.LightBlue;
+            labelPlayer2.Text = m_CurrentGame.SecondPlayer.PlayerName + ":";
+            labelPlayer1.Font = new Font("Arial", 16, FontStyle.Bold);
+            labelPlayer2.Font = new Font("Arial", 16, FontStyle.Bold);
+            Player1Score.Font = new Font("Arial", 16, FontStyle.Bold);
+            Player2Score.Font = new Font("Arial", 16, FontStyle.Bold);
+
         }
         private void initializeBoard()
         {
@@ -45,6 +50,7 @@ namespace DamkaForm
                 {
                     Button button = new Button();
                     button.Size = new Size(m_CellSize, m_CellSize);
+                    button.Font = new Font("Arial", m_CellSize / 3, FontStyle.Bold);
                     button.Location = new SDPoint(j * m_CellSize, i * m_CellSize);
                     if (m_CurrentGame.Board.GameBoard[i, j].PieceType != Piece.e_PieceType.Empty)
                     {
@@ -206,7 +212,7 @@ namespace DamkaForm
         private void fitFormSize()
         {
             int boardSizePixel = m_CurrentGame.Board.Size * m_CellSize;
-            int extraSpace = 100;
+            int extraSpace = 150;
             this.ClientSize = new Size(boardSizePixel + extraSpace, boardSizePixel + extraSpace);
 
             boardPanel.Location = new SDPoint(
